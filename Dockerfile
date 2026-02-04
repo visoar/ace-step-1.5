@@ -75,10 +75,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     ACESTEP_PROJECT_ROOT=/app \
     ACESTEP_CHECKPOINT_DIR=/app/checkpoints \
     ACESTEP_OUTPUT_DIR=/app/outputs \
+    ACESTEP_AUDIO_DIR=/app/outputs \
     ACESTEP_DEVICE=cuda \
     ACESTEP_DIT_CONFIG=acestep-v15-turbo \
     ACESTEP_LM_MODEL=acestep-5Hz-lm-1.7B \
     ACESTEP_LM_BACKEND=vllm \
+    # Triton cache directory (for vllm JIT compilation)
+    TRITON_CACHE_DIR=/app/.triton_cache \
     # Server configuration
     HOST=0.0.0.0 \
     PORT=8000
@@ -88,12 +91,13 @@ WORKDIR /app
 # Create non-root user first (before copying large files)
 RUN useradd --create-home --shell /bin/bash appuser
 
-# Install runtime dependencies
+# Install runtime dependencies (including gcc for triton/vllm JIT compilation)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.11 \
     python3.11-venv \
     libsndfile1 \
     ffmpeg \
+    gcc \
     && rm -rf /var/lib/apt/lists/* \
     && ln -sf /usr/bin/python3.11 /usr/bin/python
 
@@ -110,8 +114,8 @@ COPY --from=model-downloader --chown=appuser:appuser /models/checkpoints /app/ch
 
 # No custom application code needed - using ACE-Step's built-in API server
 
-# Create output directory with correct ownership
-RUN mkdir -p /app/outputs && chown -R appuser:appuser /app/outputs
+# Create output and cache directories with correct ownership
+RUN mkdir -p /app/outputs /app/.triton_cache && chown -R appuser:appuser /app/outputs /app/.triton_cache
 
 USER appuser
 
