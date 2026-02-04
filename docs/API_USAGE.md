@@ -26,7 +26,126 @@ https://<POD_ID>-8000.proxy.runpod.net
 | `/format_input` | POST | Format and enhance lyrics/caption via LLM |
 | `/v1/audio` | GET | Download generated audio file |
 
-## Quick Start Example
+## Python CLI Script (Recommended)
+
+The easiest way to generate music is using the included Python CLI script. It handles task submission, polling, and file download automatically.
+
+### Basic Usage
+
+```bash
+python generate_music.py \
+  --api-url https://your-pod-8000.proxy.runpod.net \
+  --caption "Upbeat indie pop with jangly guitars and energetic vocals" \
+  --lyrics "[Verse 1]\nWalking down the street\nMusic in my feet\n\n[Chorus]\nWe are alive tonight" \
+  --output my_song.mp3
+```
+
+### Using a Lyrics File
+
+```bash
+python generate_music.py \
+  --api-url http://localhost:8000 \
+  --caption "Dreamy folk ballad with acoustic guitar" \
+  --lyrics-file my_lyrics.txt \
+  --duration 120 \
+  --output ballad.mp3
+```
+
+### Generate Multiple Variations
+
+```bash
+python generate_music.py \
+  --api-url https://your-api.runpod.net \
+  --caption "Electronic dance track with driving beat" \
+  --batch-size 2 \
+  --output dance.mp3  # Creates dance_1.mp3, dance_2.mp3
+```
+
+### CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--api-url` | Base URL of the ACE-Step API (required) |
+| `--caption`, `-c` | Music style description (required) |
+| `--lyrics`, `-l` | Song lyrics with structure tags (use `\n` for newlines) |
+| `--lyrics-file`, `-f` | Path to a text file containing lyrics |
+| `--duration`, `-d` | Duration in seconds (default: 90) |
+| `--batch-size`, `-b` | Number of variations to generate (default: 1) |
+| `--output`, `-o` | Output filename (default: output.mp3) |
+| `--poll-interval` | Seconds between status checks (default: 5) |
+| `--timeout` | Maximum seconds to wait (default: 600) |
+| `--quiet`, `-q` | Suppress progress output |
+| `--show-lyrics-help` | Show detailed lyrics writing guide |
+| `--show-caption-help` | Show detailed style/caption guide |
+
+### Writing Effective Captions
+
+The caption describes the musical style. Include:
+- **Genre**: pop, rock, folk, electronic, jazz, hip-hop, etc.
+- **Instruments**: guitar, piano, synths, drums, strings, etc.
+- **Mood**: upbeat, melancholic, energetic, peaceful, dark, hopeful
+- **Vocal style**: soft female vocals, raspy male voice, choir, etc.
+- **Production**: lo-fi, polished, atmospheric, reverb-heavy
+
+**Example captions:**
+```
+"Upbeat indie pop with jangly guitars, bright synths, and energetic female vocals"
+"Dark atmospheric electronic with deep bass, haunting pads, and whispered vocals"
+"Warm acoustic folk ballad with fingerpicked guitar, soft harmonies, and gentle strings"
+"High-energy rock anthem with distorted guitars, pounding drums, and powerful male vocals"
+```
+
+### Structuring Lyrics
+
+Use structure tags to organize your song:
+
+```
+[Intro]        - Instrumental opening
+[Verse 1]      - First verse (use [Verse 2], [Verse 3] for more)
+[Pre-Chorus]   - Build-up before chorus
+[Chorus]       - Main hook, usually repeated
+[Bridge]       - Contrasting section
+[Outro]        - Ending section
+[Drop]         - For electronic music
+[Instrumental] - Non-vocal sections
+```
+
+**Example lyrics file:**
+```
+[Verse 1]
+Walking down the empty street
+Shadows dancing at my feet
+
+[Chorus]
+We are the dreamers of the night
+Chasing stars until the light
+
+[Verse 2]
+Memories like falling rain
+Washing away all the pain
+
+[Chorus]
+We are the dreamers of the night
+Chasing stars until the light
+
+[Bridge]
+And when the morning comes around
+We'll still be here, we won't back down
+
+[Outro]
+Dreamers of the night...
+```
+
+**Tips:**
+- Keep verses 2-4 lines each for best results
+- Repeat the chorus for emphasis
+- Leave blank lines between sections
+
+---
+
+## Quick Start Example (curl)
+
+For direct API access without the CLI script, use curl:
 
 ### 1. Check API Health
 
