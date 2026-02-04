@@ -71,6 +71,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
     PATH="/opt/venv/bin:$PATH" \
+    # CUDA library paths for triton JIT compilation
+    LIBRARY_PATH="/usr/local/cuda/lib64/stubs:${LIBRARY_PATH}" \
+    LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}" \
     # ACE-Step configuration
     ACESTEP_PROJECT_ROOT=/app \
     ACESTEP_CHECKPOINT_DIR=/app/checkpoints \
