@@ -2,6 +2,8 @@
 
 Generate high-quality music from text descriptions using ACE-Step 1.5 - an open-source music generation model.
 
+For Runpod Serverless invocation and request/response schema, see [README_serverless.md](README_serverless.md).
+
 ## What's Included
 
 - **ACE-Step 1.5 models** pre-loaded (~15GB)

@@ -14,6 +14,7 @@ The fastest way to get started is to deploy the pre-built image on RunPod:
 
 This template includes all models pre-loaded and is ready to use immediately. Once deployed:
 - **REST API**: `https://<POD_ID>-8000.proxy.runpod.net`
+- **Serverless API Guide**: [README_serverless.md](README_serverless.md)
 
 ## Features
 
