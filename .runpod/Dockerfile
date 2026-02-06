@@ -143,9 +143,10 @@ RUN uv pip install --system --no-cache runpod
 # Expose ports (8000 for API, 7860 for Gradio UI)
 EXPOSE 8000 7860
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=1800s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+# Health check for serverless worker process.
+# Do not check API port 8000 here because handler.py starts the API lazily on first job.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD pgrep -f "python -u /app/handler.py" >/dev/null || exit 1
 
 # Runpod serverless entrypoint
 CMD ["python", "-u", "/app/handler.py"]

@@ -5,10 +5,12 @@
       "input": {
         "caption": "Upbeat electronic instrumental with bright synths",
         "lyrics": "",
-        "duration": 30,
-        "batch_size": 1
+        "duration": 8,
+        "batch_size": 1,
+        "timeout_seconds": 900,
+        "poll_interval": 2
       },
-      "timeout": 1800000
+      "timeout": 1200000
     }
   ],
   "config": {
@@ -17,7 +19,7 @@
     "env": [
       {
         "key": "ACESTEP_API_STARTUP_TIMEOUT",
-        "value": "1500"
+        "value": "900"
       },
       {
         "key": "ACESTEP_DEFAULT_DURATION",
