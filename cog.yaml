@@ -1,0 +1,15 @@
+build:
+  gpu: true
+  python_version: "3.11"
+  python_requirements: requirements-cog.txt
+  system_packages:
+    - "build-essential"
+    - "ffmpeg"
+    - "git"
+    - "libsndfile1"
+  run:
+    - "curl -LsSf https://astral.sh/uv/install.sh | sh"
+    - "git clone --depth 1 https://github.com/ace-step/ACE-Step-1.5.git /tmp/ACE-Step-1.5"
+    - "/root/.local/bin/uv pip install --system --no-cache /tmp/ACE-Step-1.5"
+    - "rm -rf /tmp/ACE-Step-1.5"
+predict: "predict.py:Predictor"
