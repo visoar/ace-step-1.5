@@ -25,6 +25,15 @@
     ],
     "env": [
       {
+        "key": "HF_TOKEN",
+        "input": {
+          "name": "Hugging Face Token (optional)",
+          "type": "string",
+          "description": "Optional token to avoid anonymous download limits when pulling models.",
+          "default": ""
+        }
+      },
+      {
         "key": "ACESTEP_API_PORT",
         "value": "8000"
       },

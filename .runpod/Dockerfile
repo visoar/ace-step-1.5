@@ -16,19 +16,54 @@ ENV HF_TOKEN=${HF_TOKEN}
 
 WORKDIR /models
 
-# Install huggingface-hub with hf_transfer for faster downloads
-RUN pip install --no-cache-dir "huggingface-hub[cli,hf_transfer]"
+# Install huggingface-hub
+RUN pip install --no-cache-dir "huggingface-hub[cli]"
 
-# Enable fast transfers
-ENV HF_HUB_ENABLE_HF_TRANSFER=1
+# Prefer stable downloader behavior in CI builders
+ENV HF_HUB_ENABLE_HF_TRANSFER=0
 
-# Download main model package (includes VAE, Qwen3-Embedding, acestep-5Hz-lm-1.7B)
-# Uses HF_TOKEN for authentication with gated repos
-# Exclude acestep-v15-turbo since we use acestep-v15-base instead
-RUN python -c "import os; from huggingface_hub import snapshot_download; snapshot_download('ACE-Step/Ace-Step1.5', local_dir='/models/checkpoints', token=os.environ.get('HF_TOKEN'), ignore_patterns=['acestep-v15-turbo/*'])"
+# Download model packages with retry support.
+RUN python - <<'PY'
+import os
+import time
+from huggingface_hub import snapshot_download
 
-# Download acestep-v15-base as the primary DiT model
-RUN python -c "import os; from huggingface_hub import snapshot_download; snapshot_download('ACE-Step/acestep-v15-base', local_dir='/models/checkpoints/acestep-v15-base', token=os.environ.get('HF_TOKEN'))"
+token = (os.environ.get("HF_TOKEN") or "").strip() or None
+
+downloads = [
+    (
+        "ACE-Step/Ace-Step1.5",
+        "/models/checkpoints",
+        ["acestep-v15-turbo/*"],
+    ),
+    (
+        "ACE-Step/acestep-v15-base",
+        "/models/checkpoints/acestep-v15-base",
+        None,
+    ),
+]
+
+for repo_id, local_dir, ignore_patterns in downloads:
+    last_error = None
+    for attempt in range(1, 4):
+        try:
+            snapshot_download(
+                repo_id=repo_id,
+                local_dir=local_dir,
+                token=token,
+                ignore_patterns=ignore_patterns,
+            )
+            print(f"Downloaded {repo_id}")
+            last_error = None
+            break
+        except Exception as error:
+            last_error = error
+            print(f"Attempt {attempt}/3 failed for {repo_id}: {error}")
+            if attempt < 3:
+                time.sleep(10)
+    if last_error is not None:
+        raise last_error
+PY
 
 # Optional: Download additional LM models (uncomment if needed)
 # RUN python -c "from huggingface_hub import snapshot_download; snapshot_download('ACE-Step/acestep-5Hz-lm-0.6B', local_dir='/models/checkpoints/acestep-5Hz-lm-0.6B')"
