@@ -1,0 +1,60 @@
+{
+  "title": "ACE-Step 1.5 Serverless",
+  "description": "Generate high-quality music from captions and optional lyrics using ACE-Step 1.5.",
+  "type": "serverless",
+  "category": "audio",
+  "iconUrl": "https://raw.githubusercontent.com/visoar/ace-step-1.5/main/.runpod/icon.svg",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 40,
+    "presets": [
+      {
+        "name": "Balanced",
+        "defaults": {
+          "ACESTEP_DEFAULT_DURATION": 90,
+          "ACESTEP_POLL_INTERVAL": 3
+        }
+      },
+      {
+        "name": "Fast Preview",
+        "defaults": {
+          "ACESTEP_DEFAULT_DURATION": 30,
+          "ACESTEP_POLL_INTERVAL": 2
+        }
+      }
+    ],
+    "env": [
+      {
+        "key": "ACESTEP_API_PORT",
+        "value": "8000"
+      },
+      {
+        "key": "ACESTEP_API_STARTUP_TIMEOUT",
+        "input": {
+          "name": "API Startup Timeout (sec)",
+          "type": "number",
+          "description": "Max seconds to wait for model/API initialization.",
+          "default": 900
+        }
+      },
+      {
+        "key": "ACESTEP_DEFAULT_DURATION",
+        "input": {
+          "name": "Default Duration (sec)",
+          "type": "number",
+          "description": "Default generation duration when duration is not provided.",
+          "default": 90
+        }
+      },
+      {
+        "key": "ACESTEP_POLL_INTERVAL",
+        "input": {
+          "name": "Poll Interval (sec)",
+          "type": "number",
+          "description": "How often to query task status while generating.",
+          "default": 3
+        }
+      }
+    ]
+  }
+}
