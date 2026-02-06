@@ -26,6 +26,69 @@ Once the pod is running:
 - **Gradio UI**: `http://<POD_IP>:7860` - Web interface for music generation
 - **REST API**: `http://<POD_IP>:8000` - Programmatic access
 
+## Runpod Serverless Invocation
+
+When published as a Runpod Serverless endpoint, use:
+
+`https://api.runpod.ai/v2/<ENDPOINT_ID>/`
+
+### Synchronous (`/runsync`) Example
+
+```bash
+curl -X POST "https://api.runpod.ai/v2/<ENDPOINT_ID>/runsync" \
+  -H "Authorization: Bearer <RUNPOD_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": {
+      "caption": "Upbeat electronic instrumental with bright synths",
+      "lyrics": "",
+      "duration": 30,
+      "batch_size": 1
+    }
+  }'
+```
+
+### Asynchronous (`/run` + `/status`) Example
+
+```bash
+# Submit job
+curl -X POST "https://api.runpod.ai/v2/<ENDPOINT_ID>/run" \
+  -H "Authorization: Bearer <RUNPOD_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "input": {
+      "caption": "Cinematic orchestral trailer music",
+      "duration": 45
+    }
+  }'
+
+# Check status (replace <JOB_ID>)
+curl -X GET "https://api.runpod.ai/v2/<ENDPOINT_ID>/status/<JOB_ID>" \
+  -H "Authorization: Bearer <RUNPOD_API_KEY>"
+```
+
+### Expected Output (Handler)
+
+```json
+{
+  "task_id": "....",
+  "status": "completed",
+  "duration": 30,
+  "batch_size": 1,
+  "results": [
+    {
+      "file": "/v1/audio?filename=....mp3"
+    }
+  ]
+}
+```
+
+Optional input fields supported by this handler:
+- `timeout_seconds` (default `1800`)
+- `poll_interval` (default `3`)
+- `return_audio_base64` (default `false`)
+- `max_base64_bytes` (default `8000000`)
+
 ### CLI Tool (Recommended)
 
 The easiest way to generate music is using the included Python CLI script. Download `generate_music.py` from the [GitHub repo](https://github.com/ValyrianTech/ace-step-1.5) and run:
